@@ -4,7 +4,7 @@ This directory will contain the implementation of the Rock Paper Scissors game u
 
 ## Planned Features
 - Real-time hand gesture recognition for Rock, Paper, and Scissors moves
-- Player vs Computer gameplay
+- Player vs AI gameplay
 - Score tracking system
 - Integration with the main ASL detection system
 - Performance analytics and statistics
@@ -12,15 +12,8 @@ This directory will contain the implementation of the Rock Paper Scissors game u
 ## Directory Structure
 ```
 RPS/
-├── models/         # Will contain trained models for gesture recognition
+├── agents/        # contains 38 Agents
 ├── data/          # Training and testing data
 ├── src/           # Source code for the RPS game
 └── utils/         # Utility functions and helper scripts
 ```
-
-## Implementation Status
-- [ ] Hand gesture recognition
-- [ ] Game logic implementation
-- [ ] User interface integration
-- [ ] Score tracking system
-- [ ] Performance analytics 
