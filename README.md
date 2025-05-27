@@ -192,13 +192,6 @@ pip install -r Interface/requirements.txt
 
 This project is licensed under the MIT License.
 
-## 🙏 **Acknowledgments**
-
-- **[MediaPipe](https://mediapipe.dev/)** - Hand tracking and pose estimation
-- **[Ollama](https://ollama.ai/)** - Local LLM infrastructure
-- **[Mistral AI](https://mistral.ai/)** - Language model for responses
-- **[OpenCV](https://opencv.org/)** - Computer vision processing
-- **[Flask](https://flask.palletsprojects.com/)** - Web framework
 
 <div align="center">
 
