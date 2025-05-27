@@ -85,7 +85,7 @@ pip install opencv-python mediapipe numpy pandas matplotlib
 python main.py
 ```
 
-**Perfect for:** Developers, custom integrations, and Testing
+**Perfect for:** Developers, custom integrations, and testing
 
 ---
 
@@ -98,31 +98,29 @@ python main.py
 ```
 Hello-ai/
 ├── 📖 README.md                   # This file
-├── 📖 PROJECT_STRUCTURE.md        # Detailed organization guide
-├── 📄 LICENSE                     # MIT License
+├── 📄 LICENSE                     
 │
-├── 🎯 Interface/                   # Complete Web Application
-│   ├── 🐍 main.py                # Flask web app (all features)
-│   ├── 📁 templates/             # HTML templates
+├── 🎯 Interface/                # Complete Web Application
+│   ├── 🐍 main.py                # Flask web app (all in)
+│   ├── 📁 templates/             # frontend templates
 │   ├── 👤 user_data/             # User profiles & history
 │   ├── 🎲 rps_data/              # Game statistics
-│   └── 📋 requirements.txt       # Python dependencies
+│   └── 📋 requirements.txt       # Dependencies
 │
-├── 🤖 ASL_Detection/              # Standalone ASL System
+├── 🤖 ASL_Detection/              # The ASL System
 │   └── sign-language-detector-python-master/
 │       ├── 🧠 model.p            # Trained ML model
 │       ├── 📊 data/              # Training data & mappings
 │       ├── 🖥️ asl_main.py        # Tkinter GUI with AI
 │       └── 📁 [training files]   # Model training scripts
 │
-└── 🎲 RPS/                        # Standalone RPS System
+└── 🎲 RPS/                        # The RPS System
     └── mab02/                     # Multi-Armed Bandit AI
-        ├── 🧠 core/              # MAB algorithm
+        ├── 🧠 core/              # Algorithm
         ├── 🤖 agents/            # 38 AI agents
-        └── 📊 [game data]        # Statistics & learning data
+        └── 📊 [game data]        # Statistics
 ```
 
----
 
 
 
