@@ -60,8 +60,8 @@ python main.py
 - Pattern recognition that adapts to player behavior
 - Real-time statistics and win rate tracking
 
-### 🤖 **AI Robotic Arm Personality**
-- Quirky robotic character with mechanical humor
+### 🤖 **Hello AI**
+- Funny robotic character with mechanical humor
 - Context-aware responses that understand ASL detection errors
 - Consistent personality across all interactions
 - Local LLM processing via Ollama (privacy-focused)
@@ -70,7 +70,7 @@ python main.py
 
 ## 🔧 **Alternative Usage**
 
-### Standalone ASL Detection (Tkinter)
+### Standalone ASL Detection
 ```bash
 cd ASL_Detection/sign-language-detector-python-master
 pip install opencv-python mediapipe scikit-learn pillow requests
@@ -185,12 +185,6 @@ git clone https://github.com/Ammar03s/Full-Stack-ASL-Gesture-Recognition-Applica
 cd Full-Stack-ASL-Gesture-Recognition-Application
 pip install -r Interface/requirements.txt
 ```
-
-### Areas for Contribution
-- 🎯 **New ASL signs** - Expand the gesture vocabulary
-- 🤖 **AI personalities** - Create different character responses
-- 🎮 **Game modes** - Add new interactive games
-- 🌐 **Web interface** - Improve UI/UX design
 
 ---
 
