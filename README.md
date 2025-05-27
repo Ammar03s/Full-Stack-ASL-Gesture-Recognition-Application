@@ -88,32 +88,6 @@ python main.py
 
 ---
 
-## ⚙️ **Configuration**
-
-### Camera Settings
-```python
-# In main.py or asl_main.py
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-```
-
-### AI Response Settings
-```python
-# Ollama configuration
-ollama_url = "http://localhost:11434/api/generate"
-model_name = "mistral"
-temperature = 0.71  # Creativity level
-max_tokens = 200   # Response length
-```
-
-### Detection Intervals
-```python
-# ASL detection timing
-detection_interval = 4  # seconds between letter captures (adjustable)
-```
-
----
 
 
 ---
