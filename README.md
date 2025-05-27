@@ -115,34 +115,6 @@ detection_interval = 4  # seconds between letter captures (adjustable)
 
 ---
 
-## 🚨 **Troubleshooting**
-
-### Camera Issues
-```bash
-# Check camera availability
-python -c "import cv2; print('Camera 0:', cv2.VideoCapture(0).isOpened())"
-```
-
-### Ollama/AI Issues
-```bash
-# Check Ollama status
-curl http://localhost:11434/api/tags
-
-# Verify Mistral model
-ollama list
-
-# Restart Ollama service
-ollama serve
-```
-
-### Port Conflicts
-```bash
-# Check port 8080 usage
-netstat -aon | find ":8080"
-
-# Kill process using port (replace PID)
-taskkill /f /pid [PID]
-```
 
 ---
 
