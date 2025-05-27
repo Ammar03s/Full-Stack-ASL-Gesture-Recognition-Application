@@ -1,0 +1,6 @@
+timestamp,player,ai,result,agent
+2025-05-27T20:15:36.249939,p,r,win,Agent1
+2025-05-27T20:15:38.265040,s,s,draw,Agent6
+2025-05-27T20:15:40.298088,s,r,lose,Agent6
+2025-05-27T20:15:42.359610,p,r,win,Agent6
+2025-05-27T20:15:44.383868,r,s,win,Agent6
