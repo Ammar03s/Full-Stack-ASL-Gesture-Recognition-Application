@@ -53,18 +53,19 @@ python main.py
 - AI conversational responses via Ollama/Mistral LLM
 - Manual controls for spaces, corrections, and quick letters
 
-### 🎮 **Rock-Paper-Scissors AI**
-- Computer vision gesture recognition (rock/paper/scissors)
-- Multi-Armed Bandit learning algorithm
-- 38 specialized AI agents with different strategies
-- Pattern recognition that adapts to player behavior
-- Real-time statistics and win rate tracking
-
 ### 🤖 **Hello AI**
 - Funny robotic character with mechanical humor
 - Context-aware responses that understand ASL detection errors
 - Consistent personality across all interactions
 - Local LLM processing via Ollama (privacy-focused)
+
+### 🎮 **Rock-Paper-Scissors AI**
+- Computer vision gesture recognition
+- 38 specialized AI agents with different strategies
+- Multi-Armed Bandit learning algorithm
+- Pattern recognition that adapts to player behavior
+- Historical Data Tracking
+- Real-time statistics
 
 ---
 
