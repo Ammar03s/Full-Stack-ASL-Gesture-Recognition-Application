@@ -26,7 +26,7 @@ cd Full-Stack-ASL-Gesture-Recognition-Application
 
 # 2. Install Ollama & Mistral
 # Install Ollama from https://ollama.ai
-ollama pull mistral #adjustable
+ollama pull mistral #or any model you want
 
 # 3. Install Dependencies
 cd Interface
@@ -85,7 +85,7 @@ pip install opencv-python mediapipe numpy pandas matplotlib
 python main.py
 ```
 
-**Perfect for:** Developers, custom integrations, and testing
+**For** Developers, custom integrations, and testing.
 
 ---
 
@@ -98,7 +98,7 @@ python main.py
 ```
 Hello-ai/
 ├── 📖 README.md                   # This file
-├── 📄 LICENSE                     
+|                     
 │
 ├── 🎯 Interface/                # Complete Web Application
 │   ├── 🐍 main.py                # Flask web app (all in)
@@ -135,7 +135,7 @@ pip install -r Interface/requirements.txt
 
 ## 📄 **License**
 
-This project is licensed under the MIT License.
+MIT License.
 
 
 <div align="center">
