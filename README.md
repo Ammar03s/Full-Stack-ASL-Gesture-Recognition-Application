@@ -11,12 +11,12 @@ An intelligent multi-modal system that combines **ASL (American Sign Language) d
 
 ![Hello AI Demo](Demo.mp4)
 
-## 🚀 **Quick Start**
+## 🚀 **Start**
 
 ### Prerequisites
 - **Python 3.8+** with pip
 - **Webcam** for gesture detection
-- **Ollama** with Mistral model for AI responses
+- **Ollama** for AI responses
 
 ### Setup & Launch
 ```bash
