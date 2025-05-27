@@ -1,0 +1,586 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AI Companion System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold text-white mb-3">
+                <i class="fas fa-robot me-3"></i>
+                Welcome back, {{ username }}!
+            </h1>
+            <p class="lead text-white opacity-75">
+                Choose your AI-powered activity below
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- ASL Detection Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="app-card h-100">
+            <div class="card-header-custom text-center">
+                <i class="fas fa-hands fa-3x mb-3"></i>
+                <h4 class="mb-0">ASL Detection</h4>
+            </div>
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="mb-4 flex-grow-1">
+                    <h6 class="fw-bold mb-3">Features:</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Real-time hand gesture recognition
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Letter-by-letter sentence building
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Save your sentences to history
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Manual controls for corrections
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <a href="/asl" class="btn btn-primary-custom w-100">
+                        <i class="fas fa-play me-2"></i>
+                        Start ASL Detection
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RPS Gaming Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="app-card h-100">
+            <div class="card-header-custom text-center">
+                <i class="fas fa-gamepad fa-3x mb-3"></i>
+                <h4 class="mb-0">Rock Paper Scissors</h4>
+            </div>
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="mb-4 flex-grow-1">
+                    <h6 class="fw-bold mb-3">Features:</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Camera-based gesture recognition
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            38 AI agents with different strategies
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Multi-armed bandit AI selection
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Track your win/loss statistics
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <a href="/rps" class="btn btn-success-custom w-100">
+                        <i class="fas fa-play me-2"></i>
+                        Play RPS Game
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History & Stats Card -->
+    <div class="col-lg-4 col-md-12">
+        <div class="app-card h-100">
+            <div class="card-header-custom text-center">
+                <i class="fas fa-history fa-3x mb-3"></i>
+                <h4 class="mb-0">History & Stats</h4>
+            </div>
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="mb-4 flex-grow-1">
+                    <h6 class="fw-bold mb-3">View:</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Your saved ASL sentences
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            RPS game session history
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Win/loss statistics
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            AI agent performance
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="text-center">
+                    <a href="/stats" class="btn btn-info w-100" style="background: var(--gradient-success); border: none; border-radius: 12px; padding: 12px 24px; font-weight: 600;">
+                        <i class="fas fa-chart-line me-2"></i>
+                        View Stats & Analytics
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats Row -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="app-card">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Your Activity Dashboard
+                    </h5>
+                    <button class="btn btn-outline-primary btn-sm" onclick="loadQuickStats()">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        Refresh
+                    </button>
+                </div>
+                
+                <!-- Main Stats Cards -->
+                <div class="row text-center mb-4" id="quickStats">
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="p-3 bg-light rounded-3 position-relative overflow-hidden">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary opacity-10"></div>
+                            <i class="fas fa-comments fa-2x text-primary mb-2"></i>
+                            <div class="h4 fw-bold mb-1" id="aslCount">-</div>
+                            <div class="small text-muted mb-2">ASL Sentences</div>
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar bg-primary" id="aslProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="p-3 bg-light rounded-3 position-relative overflow-hidden">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-warning opacity-10"></div>
+                            <i class="fas fa-gamepad fa-2x text-warning mb-2"></i>
+                            <div class="h4 fw-bold mb-1" id="rpsGames">-</div>
+                            <div class="small text-muted mb-2">RPS Games</div>
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar bg-warning" id="rpsProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="p-3 bg-light rounded-3 position-relative overflow-hidden">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-success opacity-10"></div>
+                            <i class="fas fa-trophy fa-2x text-success mb-2"></i>
+                            <div class="h4 fw-bold mb-1" id="winRate">-</div>
+                            <div class="small text-muted mb-2">Win Rate</div>
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar bg-success" id="winProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="p-3 bg-light rounded-3 position-relative overflow-hidden">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-info opacity-10"></div>
+                            <i class="fas fa-calendar fa-2x text-info mb-2"></i>
+                            <div class="h4 fw-bold mb-1" id="daysActive">-</div>
+                            <div class="small text-muted mb-2">Days Active</div>
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar bg-info" id="daysProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions Row -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-bolt text-warning me-2"></i>
+                                    Quick Actions
+                                </h6>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a href="/asl" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-hands me-1"></i>
+                                        ASL Now
+                                    </a>
+                                    <a href="/rps" class="btn btn-success btn-sm">
+                                        <i class="fas fa-gamepad me-1"></i>
+                                        Play RPS
+                                    </a>
+                                    <a href="/stats" class="btn btn-info btn-sm">
+                                        <i class="fas fa-chart-line me-1"></i>
+                                        Full Stats
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card border-0 bg-light">
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-clock text-info me-2"></i>
+                                    Recent Activity
+                                </h6>
+                                <div id="recentActivity" class="small">
+                                    <div class="text-muted">Loading recent activity...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievement Badges -->
+                <div class="row">
+                    <div class="col-12">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-medal text-warning me-2"></i>
+                            Achievements
+                        </h6>
+                        <div id="achievementBadges" class="d-flex gap-2 flex-wrap">
+                            <!-- Badges will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Getting Started Tips -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="app-card">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    Getting Started Tips
+                </h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-hand-paper fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold">ASL Detection Tips</h6>
+                                <p class="small text-muted mb-0">
+                                    Position your hand clearly in front of the camera. The system detects letters every 4 seconds automatically.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <i class="fas fa-fist-raised fa-2x text-success"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold">RPS Gaming Tips</h6>
+                                <p class="small text-muted mb-0">
+                                    Show Rock (fist), Paper (open hand), or Scissors (2-3 fingers) to the camera. The AI learns from your patterns!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadQuickStats();
+    loadRecentActivity();
+    initializeAchievements();
+    
+    // Add hover effects to cards
+    const cards = document.querySelectorAll('.app-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(-4px)';
+        });
+    });
+    
+    // Auto-refresh stats every 30 seconds
+    setInterval(loadQuickStats, 30000);
+});
+
+function loadQuickStats() {
+    fetch('/api/user/stats')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateStats(data.stats);
+            updateProgressBars(data.stats);
+        } else {
+            // Fallback to placeholder data
+            updateStats({
+                asl_sentences: 0,
+                rps_games: 0,
+                win_rate: 0,
+                days_active: 1
+            });
+        }
+    })
+    .catch(error => {
+        console.log('Stats not available yet, showing defaults');
+        updateStats({
+            asl_sentences: 0,
+            rps_games: 0,
+            win_rate: 0,
+            days_active: 1
+        });
+    });
+}
+
+function updateStats(stats) {
+    animateNumber('aslCount', stats.asl_sentences || 0);
+    animateNumber('rpsGames', stats.rps_games || 0);
+    animateNumber('winRate', stats.win_rate || 0, '%');
+    animateNumber('daysActive', stats.days_active || 1);
+}
+
+function updateProgressBars(stats) {
+    // ASL Progress (max 50 sentences for full bar)
+    const aslProgress = Math.min(100, (stats.asl_sentences / 50) * 100);
+    animateProgressBar('aslProgress', aslProgress);
+    
+    // RPS Progress (max 100 games for full bar)
+    const rpsProgress = Math.min(100, (stats.rps_games / 100) * 100);
+    animateProgressBar('rpsProgress', rpsProgress);
+    
+    // Win Rate Progress (already percentage)
+    animateProgressBar('winProgress', stats.win_rate || 0);
+    
+    // Days Active Progress (max 30 days for full bar)
+    const daysProgress = Math.min(100, (stats.days_active / 30) * 100);
+    animateProgressBar('daysProgress', daysProgress);
+}
+
+function animateNumber(elementId, finalValue, suffix = '') {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    const startValue = 0;
+    const increment = Math.max(1, Math.floor(finalValue / 20));
+    let currentValue = startValue;
+    
+    const timer = setInterval(() => {
+        currentValue += increment;
+        if (currentValue >= finalValue) {
+            currentValue = finalValue;
+            clearInterval(timer);
+        }
+        element.textContent = currentValue + suffix;
+    }, 50);
+}
+
+function animateProgressBar(elementId, targetWidth) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    let currentWidth = 0;
+    const increment = targetWidth / 20;
+    
+    const timer = setInterval(() => {
+        currentWidth += increment;
+        if (currentWidth >= targetWidth) {
+            currentWidth = targetWidth;
+            clearInterval(timer);
+        }
+        element.style.width = currentWidth + '%';
+    }, 50);
+}
+
+function loadRecentActivity() {
+    // Simulate recent activity - in a real app, this would come from the server
+    const activities = [
+        { type: 'asl', text: 'Detected new ASL letter', time: '2 minutes ago', icon: 'fas fa-hands text-primary' },
+        { type: 'rps', text: 'Won RPS game vs AI Agent', time: '5 minutes ago', icon: 'fas fa-trophy text-success' },
+        { type: 'system', text: 'Logged into system', time: '10 minutes ago', icon: 'fas fa-sign-in-alt text-info' }
+    ];
+    
+    fetch('/api/user/stats')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const stats = data.stats;
+            const recentActivities = [];
+            
+            if (stats.asl_sentences > 0) {
+                recentActivities.push({
+                    type: 'asl',
+                    text: `Saved ${stats.asl_sentences} ASL sentence${stats.asl_sentences !== 1 ? 's' : ''}`,
+                    time: 'Recent',
+                    icon: 'fas fa-hands text-primary'
+                });
+            }
+            
+            if (stats.rps_games > 0) {
+                recentActivities.push({
+                    type: 'rps',
+                    text: `Played ${stats.rps_games} RPS game${stats.rps_games !== 1 ? 's' : ''} (${stats.win_rate}% win rate)`,
+                    time: 'Recent',
+                    icon: 'fas fa-gamepad text-warning'
+                });
+            }
+            
+            recentActivities.push({
+                type: 'system',
+                text: `Active for ${stats.days_active} day${stats.days_active !== 1 ? 's' : ''}`,
+                time: 'Today',
+                icon: 'fas fa-calendar text-info'
+            });
+            
+            displayRecentActivity(recentActivities);
+        }
+    })
+    .catch(() => {
+        displayRecentActivity([
+            { type: 'system', text: 'Welcome to AI Companion!', time: 'Now', icon: 'fas fa-star text-warning' }
+        ]);
+    });
+}
+
+function displayRecentActivity(activities) {
+    const container = document.getElementById('recentActivity');
+    if (!container) return;
+    
+    if (activities.length === 0) {
+        container.innerHTML = '<div class="text-muted">No recent activity</div>';
+        return;
+    }
+    
+    const html = activities.map(activity => `
+        <div class="d-flex align-items-center mb-2">
+            <i class="${activity.icon} me-2"></i>
+            <div class="flex-grow-1">
+                <div class="small">${activity.text}</div>
+                <div class="text-muted" style="font-size: 0.75rem;">${activity.time}</div>
+            </div>
+        </div>
+    `).join('');
+    
+    container.innerHTML = html;
+}
+
+function initializeAchievements() {
+    fetch('/api/user/stats')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateAchievements(data.stats);
+        }
+    })
+    .catch(() => {
+        updateAchievements({ asl_sentences: 0, rps_games: 0, win_rate: 0, days_active: 1 });
+    });
+}
+
+function updateAchievements(stats) {
+    const achievements = [];
+    
+    // ASL Achievements
+    if (stats.asl_sentences >= 1) {
+        achievements.push({ name: 'First Words', desc: 'Saved your first ASL sentence', icon: 'fas fa-baby', color: 'success' });
+    }
+    if (stats.asl_sentences >= 10) {
+        achievements.push({ name: 'Chatterbox', desc: 'Saved 10+ ASL sentences', icon: 'fas fa-comments', color: 'primary' });
+    }
+    if (stats.asl_sentences >= 50) {
+        achievements.push({ name: 'Sign Master', desc: 'Saved 50+ ASL sentences', icon: 'fas fa-hands', color: 'warning' });
+    }
+    
+    // RPS Achievements
+    if (stats.rps_games >= 1) {
+        achievements.push({ name: 'Game On', desc: 'Played your first RPS game', icon: 'fas fa-gamepad', color: 'info' });
+    }
+    if (stats.rps_games >= 10) {
+        achievements.push({ name: 'Competitor', desc: 'Played 10+ RPS games', icon: 'fas fa-fist-raised', color: 'secondary' });
+    }
+    if (stats.win_rate >= 60) {
+        achievements.push({ name: 'Champion', desc: '60%+ win rate', icon: 'fas fa-crown', color: 'warning' });
+    }
+    if (stats.win_rate >= 80) {
+        achievements.push({ name: 'Legend', desc: '80%+ win rate', icon: 'fas fa-trophy', color: 'danger' });
+    }
+    
+    // Time-based achievements
+    if (stats.days_active >= 7) {
+        achievements.push({ name: 'Dedicated', desc: '7+ days active', icon: 'fas fa-calendar-check', color: 'success' });
+    }
+    if (stats.days_active >= 30) {
+        achievements.push({ name: 'Veteran', desc: '30+ days active', icon: 'fas fa-medal', color: 'primary' });
+    }
+    
+    displayAchievements(achievements);
+}
+
+function displayAchievements(achievements) {
+    const container = document.getElementById('achievementBadges');
+    if (!container) return;
+    
+    if (achievements.length === 0) {
+        container.innerHTML = '<span class="text-muted small">Keep using the system to unlock achievements!</span>';
+        return;
+    }
+    
+    const html = achievements.map(achievement => `
+        <span class="badge bg-${achievement.color} px-3 py-2 me-2 mb-2" 
+              title="${achievement.desc}" 
+              data-bs-toggle="tooltip">
+            <i class="${achievement.icon} me-1"></i>
+            ${achievement.name}
+        </span>
+    `).join('');
+    
+    container.innerHTML = html;
+    
+    // Initialize tooltips for Bootstrap
+    if (typeof bootstrap !== 'undefined') {
+        const tooltips = container.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltips.forEach(tooltip => {
+            new bootstrap.Tooltip(tooltip);
+        });
+    }
+}
+
+// Add pulse animation for achievement badges
+function pulseAchievements() {
+    const badges = document.querySelectorAll('#achievementBadges .badge');
+    badges.forEach((badge, index) => {
+        setTimeout(() => {
+            badge.style.animation = 'pulse 0.5s ease-in-out';
+            setTimeout(() => {
+                badge.style.animation = '';
+            }, 500);
+        }, index * 100);
+    });
+}
+
+// Call pulse animation after achievements load
+setTimeout(pulseAchievements, 1000);
+</script>
+{% endblock %} 

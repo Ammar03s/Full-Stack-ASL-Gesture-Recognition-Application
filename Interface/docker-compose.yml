@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  asl-app:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../ASL_Detection:/app/ASL_Detection:ro
+      - ../RPS:/app/RPS:ro
+      - ./user_data:/app/user_data
+    devices:
+      - /dev/video0:/dev/video0  # For camera access on Linux
+    environment:
+      - PYTHONPATH=/app
+    restart: unless-stopped 

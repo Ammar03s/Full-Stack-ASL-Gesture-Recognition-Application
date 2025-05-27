@@ -1,0 +1,678 @@
+{% extends "base.html" %}
+
+{% block title %}Rock Paper Scissors - AI Companion System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-5 fw-bold text-white mb-3">
+                    <i class="fas fa-gamepad me-3"></i>
+                    Rock Paper Scissors
+                </h1>
+                <p class="lead text-white opacity-75">
+                    Play against 38 AI agents with multi-armed bandit selection
+                </p>
+            </div>
+            <div>
+                <a href="/dashboard" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Camera and Game Area -->
+    <div class="col-lg-8">
+        <div class="app-card">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-video me-2"></i>
+                    Camera Feed
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="status-indicator" id="cameraStatus"></span>
+                    <span id="cameraStatusText">Inactive</span>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="camera-container text-center" style="position: relative; min-height: 400px; border-radius: 12px; overflow: hidden; background: #000;">
+                    <!-- Camera placeholder -->
+                    <div id="cameraPlaceholder" class="d-flex align-items-center justify-content-center text-white" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 400px; border-radius: 12px; z-index: 2;">
+                        <div>
+                            <i class="fas fa-camera fa-4x mb-3 opacity-50"></i>
+                            <h5>Camera will appear here</h5>
+                            <p class="mb-0 opacity-75">Click "Start Game" to begin</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Camera feed -->
+                    <img id="cameraFeed" 
+                         style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 400px; object-fit: cover; border-radius: 12px; background: #000; z-index: 1;" 
+                         alt="Camera Feed"
+                         onload="console.log('✅ RPS camera loaded')"
+                         onerror="console.log('❌ RPS camera error')">
+                </div>
+                
+                <!-- Current Round Display -->
+                <div class="mt-3 p-3 bg-light rounded-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <h6 class="mb-1 fw-bold">Your Move:</h6>
+                            <span class="h2 fw-bold text-primary" id="playerMove">-</span>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h6 class="mb-1 fw-bold">VS</h6>
+                            <span class="h4 fw-bold text-warning" id="roundResult">Ready</span>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h6 class="mb-1 fw-bold">AI Move:</h6>
+                            <span class="h2 fw-bold text-danger" id="aiMove">-</span>
+                            <div class="small text-muted" id="selectedAgent">No agent selected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls and Stats Panel -->
+    <div class="col-lg-4">
+        <div class="app-card h-100">
+            <div class="card-header-custom">
+                <i class="fas fa-cogs me-2"></i>
+                Game Controls
+            </div>
+            <div class="card-body p-3 d-flex flex-column">
+                <!-- Game Controls -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Game Controls</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success-custom" id="startBtn">
+                            <i class="fas fa-play me-2"></i>
+                            Start Game
+                        </button>
+                        <button class="btn btn-danger-custom" id="stopBtn" style="display: none;">
+                            <i class="fas fa-stop me-2"></i>
+                            Stop Game
+                        </button>
+                        
+                        <!-- Robotic Arm Challenge Button -->
+                        <button class="btn btn-outline-danger btn-lg" style="border: 2px solid #e74c3c; color: #e74c3c; background: transparent; transition: all 0.3s ease;" 
+                                onmouseover="this.style.background='#e74c3c'; this.style.color='white';" 
+                                onmouseout="this.style.background='transparent'; this.style.color='#e74c3c';">
+                            <i class="fas fa-robot me-2"></i>
+                            Play Against the Robotic Arm
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Manual Move Controls -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Manual Moves</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary-custom" id="rockBtn" disabled>
+                            <i class="fas fa-fist-raised me-2"></i>
+                            Rock
+                        </button>
+                        <button class="btn btn-info" id="paperBtn" disabled>
+                            <i class="fas fa-hand-paper me-2"></i>
+                            Paper
+                        </button>
+                        <button class="btn btn-warning" id="scissorsBtn" disabled>
+                            <i class="fas fa-hand-scissors me-2"></i>
+                            Scissors
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Score Display -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Score</h6>
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="p-2 bg-success text-white rounded">
+                                <div class="h4 mb-0" id="playerWins">0</div>
+                                <small>You</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 bg-secondary text-white rounded">
+                                <div class="h4 mb-0" id="draws">0</div>
+                                <small>Draws</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 bg-danger text-white rounded">
+                                <div class="h4 mb-0" id="aiWins">0</div>
+                                <small>AI</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-2">
+                        <small class="text-muted">Win Rate: <span id="winRate">0%</span></small>
+                    </div>
+                </div>
+
+                <!-- AI Agent Info -->
+                <div class="mt-auto">
+                    <h6 class="fw-bold mb-3">AI Agent Info</h6>
+                    <div class="p-3 bg-light rounded">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">Current Agent:</span>
+                            <span id="currentAgentName">None</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">Total Agents:</span>
+                            <span>38</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">Selection:</span>
+                            <span>Multi-Armed Bandit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats and History Section -->
+<div class="row mt-4">
+    <div class="col-lg-6">
+        <div class="app-card">
+            <div class="card-header-custom">
+                <i class="fas fa-chart-bar me-2"></i>
+                Player Statistics
+            </div>
+            <div class="card-body p-3">
+                <div id="statsContent">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-spinner fa-spin me-2"></i>
+                        Loading stats...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="app-card">
+            <div class="card-header-custom">
+                <i class="fas fa-history me-2"></i>
+                Recent Games
+            </div>
+            <div class="card-body p-3">
+                <div id="historyContent">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-spinner fa-spin me-2"></i>
+                        Loading history...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Game Instructions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="app-card">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    How to Play
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-2">Camera Controls:</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-fist-raised me-2 text-danger"></i>
+                                <strong>Rock:</strong> Show a closed fist (0 fingers)
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-hand-paper me-2 text-success"></i>
+                                <strong>Paper:</strong> Show an open hand (5 fingers)
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-hand-scissors me-2 text-warning"></i>
+                                <strong>Scissors:</strong> Show 2-3 fingers
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-2">Game Features:</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-brain me-2 text-primary"></i>
+                                38 different AI agents with unique strategies
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-chart-line me-2 text-info"></i>
+                                Multi-armed bandit selects best performing agents
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-hand-pointer me-2 text-success"></i>
+                                Manual controls available for precise moves
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let gameActive = false;
+let playerWins = 0;
+let aiWins = 0;
+let draws = 0;
+let gameHistory = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeControls();
+    updateScore();
+    loadPlayerStats();
+    loadGameHistory();
+});
+
+function initializeControls() {
+    // Game controls
+    document.getElementById('startBtn').addEventListener('click', startGame);
+    document.getElementById('stopBtn').addEventListener('click', stopGame);
+    
+    // Manual move controls
+    document.getElementById('rockBtn').addEventListener('click', () => playManualMove('r'));
+    document.getElementById('paperBtn').addEventListener('click', () => playManualMove('p'));
+    document.getElementById('scissorsBtn').addEventListener('click', () => playManualMove('s'));
+}
+
+function startGame() {
+    console.log('Starting RPS game...');
+    
+    // Prevent double-clicking by disabling button immediately
+    const startBtn = document.getElementById('startBtn');
+    startBtn.disabled = true;
+    startBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Starting...';
+    
+    fetch('/api/rps/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            gameActive = true;
+            showAlert('RPS game started!', 'success');
+            updateUIState();
+            startCameraFeed();
+            startPolling();
+        } else {
+            showAlert(data.message || 'Failed to start game', 'danger');
+            // Re-enable button on failure
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Game';
+        }
+    })
+    .catch(error => {
+        console.error('Error starting game:', error);
+        showAlert('Error starting game. Please try again.', 'danger');
+        // Re-enable button on error
+        startBtn.disabled = false;
+        startBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Game';
+    });
+}
+
+function stopGame() {
+    console.log('Stopping RPS game...');
+    
+    // Prevent double-clicking by disabling button immediately
+    const stopBtn = document.getElementById('stopBtn');
+    stopBtn.disabled = true;
+    stopBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Stopping...';
+    
+    // Stop polling immediately to prevent restart requests
+    gameActive = false;
+    stopPolling();
+    
+    fetch('/api/rps/stop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Stop response:', data);
+        stopCameraFeed();
+        updateUIState();
+        showAlert('RPS game stopped', 'info');
+    })
+    .catch(error => {
+        console.error('Error stopping game:', error);
+        stopCameraFeed();
+        updateUIState();
+        showAlert('Game stopped (forced)', 'warning');
+    });
+}
+
+function playManualMove(move) {
+    if (!gameActive) {
+        showAlert('Please start the game first!', 'warning');
+        return;
+    }
+    
+    fetch('/api/rps/play', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ move: move })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateGameDisplay(data.round);
+            updateScore();
+        } else {
+            showAlert(data.message || 'Error playing move', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error playing move:', error);
+        showAlert('Error playing move. Please try again.', 'danger');
+    });
+}
+
+function startCameraFeed() {
+    const cameraFeed = document.getElementById('cameraFeed');
+    const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+    
+    console.log('🎬 Starting RPS camera feed...');
+    
+    // Hide placeholder completely
+    cameraPlaceholder.style.display = 'none';
+    cameraPlaceholder.style.visibility = 'hidden';
+    
+    // Show camera feed
+    cameraFeed.style.display = 'block';
+    cameraFeed.style.visibility = 'visible';
+    cameraFeed.style.opacity = '1';
+    
+    const timestamp = new Date().getTime();
+    const videoUrl = `/video_feed/rps?t=${timestamp}`;
+    
+    console.log('📹 Setting RPS camera feed URL:', videoUrl);
+    cameraFeed.src = videoUrl;
+}
+
+function stopCameraFeed() {
+    const cameraFeed = document.getElementById('cameraFeed');
+    const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+    
+    console.log('🛑 Stopping RPS camera feed...');
+    
+    // Hide camera feed completely
+    cameraFeed.src = '';
+    cameraFeed.style.display = 'none';
+    cameraFeed.style.visibility = 'hidden';
+    cameraFeed.style.opacity = '0';
+    
+    // Show placeholder again
+    cameraPlaceholder.style.display = 'flex';
+    cameraPlaceholder.style.visibility = 'visible';
+    cameraPlaceholder.innerHTML = `
+        <div>
+            <i class="fas fa-camera fa-4x mb-3 opacity-50"></i>
+            <h5>Camera will appear here</h5>
+            <p class="mb-0 opacity-75">Click "Start Game" to begin</p>
+        </div>
+    `;
+}
+
+function startPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    
+    pollInterval = setInterval(() => {
+        if (gameActive) {
+            // Check for camera-detected moves
+            fetch('/api/rps/status')
+            .then(response => response.json())
+            .then(data => {
+                // Double-check game is still active before processing
+                if (gameActive && data.last_round) {
+                    updateGameDisplay(data.last_round);
+                }
+                if (gameActive) {
+                    updateScore();
+                }
+            })
+            .catch(error => {
+                console.error('Error polling status:', error);
+                // If polling fails repeatedly, stop it
+                if (!gameActive) {
+                    stopPolling();
+                }
+            });
+        } else {
+            // If gameActive is false, stop polling
+            stopPolling();
+        }
+    }, 1000);
+}
+
+function stopPolling() {
+    if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+    }
+}
+
+function updateGameDisplay(round) {
+    const moveNames = { 'r': 'Rock', 'p': 'Paper', 's': 'Scissors' };
+    const moveIcons = { 'r': '✊', 'p': '✋', 's': '✌️' };
+    
+    document.getElementById('playerMove').textContent = moveIcons[round.player] + ' ' + moveNames[round.player];
+    document.getElementById('aiMove').textContent = moveIcons[round.ai] + ' ' + moveNames[round.ai];
+    document.getElementById('selectedAgent').textContent = round.agent;
+    document.getElementById('currentAgentName').textContent = round.agent;
+    
+    const resultText = round.result === 'win' ? 'You Win!' : 
+                      round.result === 'lose' ? 'AI Wins!' : 'Draw!';
+    const resultClass = round.result === 'win' ? 'text-success' : 
+                       round.result === 'lose' ? 'text-danger' : 'text-warning';
+    
+    const resultElement = document.getElementById('roundResult');
+    resultElement.textContent = resultText;
+    resultElement.className = `h4 fw-bold ${resultClass}`;
+    
+    // Update score based on result
+    if (round.result === 'win') {
+        playerWins++;
+    } else if (round.result === 'lose') {
+        aiWins++;
+    } else {
+        draws++;
+    }
+    
+    // Refresh stats and history after each round
+    setTimeout(() => {
+        loadPlayerStats();
+        loadGameHistory();
+    }, 500);
+}
+
+function updateUIState() {
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const cameraStatus = document.getElementById('cameraStatus');
+    const cameraStatusText = document.getElementById('cameraStatusText');
+    const manualButtons = ['rockBtn', 'paperBtn', 'scissorsBtn'];
+    
+    if (gameActive) {
+        startBtn.style.display = 'none';
+        stopBtn.style.display = 'block';
+        stopBtn.disabled = false;
+        stopBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Stop Game';
+        cameraStatus.className = 'status-indicator status-active';
+        cameraStatusText.textContent = 'Active';
+        
+        manualButtons.forEach(btnId => {
+            document.getElementById(btnId).disabled = false;
+        });
+    } else {
+        startBtn.style.display = 'block';
+        startBtn.disabled = false;
+        startBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Game';
+        stopBtn.style.display = 'none';
+        cameraStatus.className = 'status-indicator status-inactive';
+        cameraStatusText.textContent = 'Inactive';
+        
+        manualButtons.forEach(btnId => {
+            document.getElementById(btnId).disabled = true;
+        });
+    }
+}
+
+function updateScore() {
+    document.getElementById('playerWins').textContent = playerWins;
+    document.getElementById('aiWins').textContent = aiWins;
+    document.getElementById('draws').textContent = draws;
+    
+    const totalGames = playerWins + aiWins + draws;
+    const winRate = totalGames > 0 ? Math.round((playerWins / totalGames) * 100) : 0;
+    document.getElementById('winRate').textContent = winRate + '%';
+}
+
+function loadPlayerStats() {
+    fetch('/api/rps/stats')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            displayPlayerStats(data.stats);
+        } else {
+            document.getElementById('statsContent').innerHTML = 
+                '<div class="text-center text-muted">No stats available yet</div>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading stats:', error);
+        document.getElementById('statsContent').innerHTML = 
+            '<div class="text-center text-danger">Error loading stats</div>';
+    });
+}
+
+function displayPlayerStats(stats) {
+    const statsHtml = `
+        <div class="row text-center mb-3">
+            <div class="col-3">
+                <div class="p-2 bg-primary text-white rounded">
+                    <div class="h5 mb-0">${stats.rounds}</div>
+                    <small>Total Games</small>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="p-2 bg-success text-white rounded">
+                    <div class="h5 mb-0">${stats.player_wins}</div>
+                    <small>Wins</small>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="p-2 bg-danger text-white rounded">
+                    <div class="h5 mb-0">${stats.ai_wins}</div>
+                    <small>Losses</small>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="p-2 bg-secondary text-white rounded">
+                    <div class="h5 mb-0">${stats.draws}</div>
+                    <small>Draws</small>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="h4 text-primary">Win Rate: ${stats.win_rate}%</div>
+        </div>
+        ${stats.rounds > 0 ? generateAgentStats(stats.agent_stats) : ''}
+    `;
+    document.getElementById('statsContent').innerHTML = statsHtml;
+}
+
+function generateAgentStats(agentStats) {
+    const sortedAgents = Object.entries(agentStats)
+        .sort(([,a], [,b]) => b.win_rate - a.win_rate)
+        .slice(0, 5); // Top 5 agents
+    
+    if (sortedAgents.length === 0) return '';
+    
+    let agentHtml = '<hr><h6 class="fw-bold mb-2">Top Performing Agents:</h6><div class="small">';
+    
+    sortedAgents.forEach(([agent, stats], index) => {
+        const badgeClass = index === 0 ? 'bg-warning' : index < 3 ? 'bg-info' : 'bg-secondary';
+        agentHtml += `
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span><span class="badge ${badgeClass}">${agent}</span></span>
+                <span>${stats.rounds} games, ${stats.win_rate}% win rate</span>
+            </div>
+        `;
+    });
+    
+    agentHtml += '</div>';
+    return agentHtml;
+}
+
+function loadGameHistory() {
+    fetch('/api/rps/history')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.history.length > 0) {
+            displayGameHistory(data.history);
+        } else {
+            document.getElementById('historyContent').innerHTML = 
+                '<div class="text-center text-muted">No games played yet</div>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading history:', error);
+        document.getElementById('historyContent').innerHTML = 
+            '<div class="text-center text-danger">Error loading history</div>';
+    });
+}
+
+function displayGameHistory(history) {
+    const moveIcons = { 'r': '✊', 'p': '✋', 's': '✌️' };
+    const moveNames = { 'r': 'Rock', 'p': 'Paper', 's': 'Scissors' };
+    
+    let historyHtml = '<div class="small">';
+    
+    history.reverse().forEach((game, index) => {
+        const resultClass = game.result === 'win' ? 'text-success' : 
+                           game.result === 'lose' ? 'text-danger' : 'text-warning';
+        const resultText = game.result === 'win' ? 'WIN' : 
+                          game.result === 'lose' ? 'LOSS' : 'DRAW';
+        
+        const timeStr = new Date(game.timestamp).toLocaleTimeString();
+        
+        historyHtml += `
+            <div class="d-flex justify-content-between align-items-center mb-2 p-2 ${index % 2 === 0 ? 'bg-light' : ''} rounded">
+                <div>
+                    <span class="fw-bold">${moveIcons[game.player]} vs ${moveIcons[game.ai]}</span>
+                    <small class="text-muted d-block">${game.agent} at ${timeStr}</small>
+                </div>
+                <span class="badge ${resultClass === 'text-success' ? 'bg-success' : 
+                                      resultClass === 'text-danger' ? 'bg-danger' : 'bg-warning'}">${resultText}</span>
+            </div>
+        `;
+    });
+    
+    historyHtml += '</div>';
+    document.getElementById('historyContent').innerHTML = historyHtml;
+}
+
+let pollInterval = null;
+</script>
+{% endblock %} 

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Login - AI Companion System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-md-6 col-lg-5">
+        <div class="app-card">
+            <div class="card-header-custom text-center">
+                <i class="fas fa-robot fa-3x mb-3"></i>
+                <h2 class="mb-0">Welcome to AI Companion</h2>
+                <p class="mb-0 opacity-75">Your Personal ASL & Gaming Assistant</p>
+            </div>
+            
+            <div class="card-body p-4">
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label for="username" class="form-label fw-bold">
+                            <i class="fas fa-user me-2"></i>Enter Your Username
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control form-control-custom" 
+                            id="username" 
+                            name="username" 
+                            placeholder="Type your username here..."
+                            required
+                            autocomplete="username"
+                        >
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            We'll remember your progress and preferences
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary-custom w-100 mb-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Enter AI Companion
+                    </button>
+                    
+                    <div class="text-center">
+                        <small class="text-muted">
+                            New user? Just type any username to get started!
+                        </small>
+                    </div>
+                </form>
+                
+                <!-- Features Preview -->
+                <div class="mt-4 pt-4 border-top">
+                    <h6 class="text-center mb-3 fw-bold">What You Can Do:</h6>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="text-center p-2">
+                                <i class="fas fa-hands fa-2x text-primary mb-2"></i>
+                                <div class="small fw-bold">ASL Detection</div>
+                                <div class="small text-muted">Sign Language Recognition</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center p-2">
+                                <i class="fas fa-gamepad fa-2x text-success mb-2"></i>
+                                <div class="small fw-bold">RPS Gaming</div>
+                                <div class="small text-muted">Play Against Smart AI</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    
+    // Focus on username input
+    usernameInput.focus();
+    
+    // Handle form submission
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = usernameInput.value.trim();
+        
+        if (!username) {
+            showAlert('Please enter a username!', 'warning');
+            usernameInput.focus();
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Connecting...';
+        submitBtn.disabled = true;
+        
+        // Send login request
+        fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert(data.message, 'success');
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1000);
+            } else {
+                showAlert(data.message || 'Login failed. Please try again.', 'danger');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                usernameInput.focus();
+            }
+        })
+        .catch(error => {
+            console.error('Login error:', error);
+            showAlert('Connection error. Please check your internet and try again.', 'danger');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            usernameInput.focus();
+        });
+    });
+    
+    // Add enter key support
+    usernameInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            loginForm.dispatchEvent(new Event('submit'));
+        }
+    });
+    
+    // Add some visual feedback on input
+    usernameInput.addEventListener('input', function() {
+        if (this.value.trim().length > 0) {
+            this.classList.add('is-valid');
+            this.classList.remove('is-invalid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+});
+</script>
+{% endblock %} 

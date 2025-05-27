@@ -1,0 +1,699 @@
+{% extends "base.html" %}
+
+{% block title %}ASL Detection - AI Companion System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-5 fw-bold text-white mb-3">
+                    <i class="fas fa-hands me-3"></i>
+                    ASL Sign Language Detection
+                </h1>
+                <p class="lead text-white opacity-75">
+                    Express yourself through sign language
+                </p>
+            </div>
+            <div>
+                <a href="/dashboard" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Camera and Detection Area -->
+    <div class="col-lg-8">
+        <div class="app-card">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-video me-2"></i>
+                    Camera Feed
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="status-indicator" id="cameraStatus"></span>
+                    <span id="cameraStatusText">Inactive</span>
+                </div>
+            </div>
+            <div class="card-body p-3">
+                <div class="camera-container text-center" style="position: relative; min-height: 400px; border-radius: 12px; overflow: hidden; background: #000;">
+                    <!-- Camera placeholder (shown when camera is off) -->
+                    <div id="cameraPlaceholder" class="d-flex align-items-center justify-content-center text-white" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 400px; border-radius: 12px; z-index: 2;">
+                        <div>
+                            <i class="fas fa-camera fa-4x mb-3 opacity-50"></i>
+                            <h5>Camera will appear here</h5>
+                            <p class="mb-0 opacity-75">Click "Start Detection" to begin</p>
+                        </div>
+                    </div>
+                    <!-- Camera feed (shown when camera is on) -->
+                    <img id="cameraFeed" 
+                         style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; min-height: 400px; object-fit: cover; border-radius: 12px; background: #000; z-index: 1;" 
+                         alt="Camera Feed"
+                         onload="console.log('✅ Camera image loaded successfully')"
+                         onerror="console.log('❌ Camera image failed to load')">
+                </div>
+                
+                <!-- Current Detection Display -->
+                <div class="mt-3 p-3 bg-light rounded-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h6 class="mb-1 fw-bold">
+                                <i class="fas fa-eye me-2"></i>
+                                Currently Detected:
+                            </h6>
+                            <span class="h3 fw-bold text-primary" id="currentLetter">None</span>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                Detection updates every 4 seconds
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls Panel -->
+    <div class="col-lg-4">
+        <div class="app-card h-100">
+            <div class="card-header-custom">
+                <i class="fas fa-cogs me-2"></i>
+                Controls
+            </div>
+            <div class="card-body p-3 d-flex flex-column">
+                <!-- System Controls -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">System Controls</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success-custom" id="startBtn">
+                            <i class="fas fa-play me-2"></i>
+                            Start Detection
+                        </button>
+                        <button class="btn btn-danger-custom" id="stopBtn" style="display: none;">
+                            <i class="fas fa-stop me-2"></i>
+                            Stop Detection
+                        </button>
+                        <button class="btn btn-warning" id="freezeBtn" style="display: none;">
+                            <i class="fas fa-pause me-2"></i>
+                            <span id="freezeText">Freeze Detection</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Letter Controls -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Letter Controls</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary-custom" id="addDetectedBtn" disabled>
+                            <i class="fas fa-plus me-2"></i>
+                            Add Detected Letter
+                        </button>
+                        <button class="btn btn-info" id="addSpaceBtn">
+                            <i class="fas fa-space-shuttle me-2"></i>
+                            Add Space
+                        </button>
+                        <button class="btn btn-warning" id="backspaceBtn">
+                            <i class="fas fa-backspace me-2"></i>
+                            Backspace
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sentence Controls -->
+                <div class="mt-auto">
+                    <h6 class="fw-bold mb-3">Sentence Controls</h6>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success-custom" id="saveBtn" disabled>
+                            <i class="fas fa-save me-2"></i>
+                            Save Sentence
+                        </button>
+                        <button class="btn btn-danger" id="clearBtn">
+                            <i class="fas fa-trash me-2"></i>
+                            Clear Sentence
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Letters -->
+                <div class="mt-4">
+                    <h6 class="fw-bold mb-3">Quick Add</h6>
+                    <div class="d-flex flex-wrap gap-1">
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="A">A</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="B">B</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="C">C</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="D">D</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="E">E</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="F">F</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="G">G</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="H">H</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="I">I</button>
+                        <button class="btn btn-outline-primary btn-sm quick-letter" data-letter="J">J</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sentence Display -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="app-card">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-comments me-2"></i>
+                    Your Sentence
+                </div>
+                <div>
+                    <span class="badge bg-light text-dark" id="charCount">0 characters</span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="form-control form-control-custom" style="min-height: 100px; font-size: 1.2rem; line-height: 1.6;" id="sentenceDisplay">
+                    Start signing to build your sentence...
+                </div>
+                <div class="mt-3 d-flex gap-2">
+                    <button class="btn btn-primary" id="getResponseBtn" disabled>
+                        <i class="fas fa-robot me-2"></i>
+                        Get AI Response
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Response Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="app-card">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-robot me-2"></i>
+                    Robotic Arm Response
+                </div>
+                <div>
+                    <span class="badge bg-success" id="responseStatus">Waiting for your message...</span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="response-container" style="min-height: 120px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; font-size: 1.1rem; line-height: 1.6;" id="responseDisplay">
+                    <div class="text-center opacity-75">
+                        <i class="fas fa-robot fa-3x mb-3"></i>
+                        <p class="mb-0">Talk to me using sign language and I'll respond with my robotic wisdom! 🤖</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Instructions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="app-card">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    How to Use ASL Detection
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ol class="list-styled">
+                            <li class="mb-2">Click <strong>"Start Detection"</strong> to activate the camera</li>
+                            <li class="mb-2">Position your hand clearly in front of the camera</li>
+                            <li class="mb-2">Hold each letter sign for at least 4 seconds</li>
+                            <li class="mb-2">The detected letter will appear and can be added to your sentence</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-2">Tips for Better Detection:</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Ensure good lighting
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Keep hand within camera frame
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Hold signs steadily
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Use freeze function to pause detection
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let detectionActive = false;
+let detectionFrozen = false;
+let currentSentence = "";
+let pollInterval = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeControls();
+    updateSentenceDisplay();
+});
+
+function initializeControls() {
+    // System controls
+    document.getElementById('startBtn').addEventListener('click', startDetection);
+    document.getElementById('stopBtn').addEventListener('click', stopDetection);
+    document.getElementById('freezeBtn').addEventListener('click', toggleFreeze);
+    
+    // Letter controls
+    document.getElementById('addDetectedBtn').addEventListener('click', addDetectedLetter);
+    document.getElementById('addSpaceBtn').addEventListener('click', () => addCharacter(' '));
+    document.getElementById('backspaceBtn').addEventListener('click', backspace);
+    
+    // Sentence controls
+    document.getElementById('saveBtn').addEventListener('click', saveSentence);
+    document.getElementById('clearBtn').addEventListener('click', clearSentence);
+    document.getElementById('getResponseBtn').addEventListener('click', getAIResponse);
+    
+    // Quick letters
+    document.querySelectorAll('.quick-letter').forEach(btn => {
+        btn.addEventListener('click', () => addCharacter(btn.dataset.letter));
+    });
+}
+
+function startDetection() {
+    console.log('Starting detection...');
+    fetch('/api/asl/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            detectionActive = true;
+            showAlert('ASL detection started successfully!', 'success');
+            updateUIState();
+            startCameraFeed();
+            startPolling();
+        } else {
+            showAlert(data.message || 'Failed to start detection', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error starting detection:', error);
+        showAlert('Error starting detection. Please try again.', 'danger');
+    });
+}
+
+function stopDetection() {
+    console.log('Stopping detection...');
+    detectionActive = false;
+    
+    fetch('/api/asl/stop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Stop response:', data);
+        stopPolling();
+        stopCameraFeed();
+        updateUIState();
+        showAlert('ASL detection stopped', 'info');
+    })
+    .catch(error => {
+        console.error('Error stopping detection:', error);
+        // Force stop even if API call fails
+        stopPolling();
+        stopCameraFeed();
+        updateUIState();
+        showAlert('Detection stopped (forced)', 'warning');
+    });
+}
+
+function startCameraFeed() {
+    const cameraFeed = document.getElementById('cameraFeed');
+    const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+    
+    console.log('🎬 Starting camera feed...');
+    console.log('📷 Camera feed element:', cameraFeed);
+    console.log('🏠 Placeholder element:', cameraPlaceholder);
+    
+    // Hide placeholder completely
+    console.log('🫥 Hiding placeholder...');
+    cameraPlaceholder.style.display = 'none';
+    cameraPlaceholder.style.visibility = 'hidden';
+    
+    // Show camera feed
+    console.log('📺 Showing camera feed...');
+    cameraFeed.style.display = 'block';
+    cameraFeed.style.visibility = 'visible';
+    cameraFeed.style.opacity = '1';
+    
+    // Set video source with fresh timestamp
+    const timestamp = new Date().getTime();
+    const videoUrl = `/video_feed/asl?t=${timestamp}`;
+    
+    console.log('📹 Setting camera feed URL:', videoUrl);
+    cameraFeed.src = videoUrl;
+    
+    // Add load event listener for debugging
+    cameraFeed.addEventListener('load', function() {
+        console.log('✅ Camera feed loaded successfully!');
+    });
+    
+    cameraFeed.addEventListener('error', function(e) {
+        console.error('❌ Camera feed error:', e);
+        console.error('❌ Failed URL:', cameraFeed.src);
+    });
+}
+
+function stopCameraFeed() {
+    const cameraFeed = document.getElementById('cameraFeed');
+    const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+    
+    console.log('🛑 Stopping camera feed...');
+    
+    // Hide camera feed completely
+    cameraFeed.src = '';
+    cameraFeed.style.display = 'none';
+    cameraFeed.style.visibility = 'hidden';
+    cameraFeed.style.opacity = '0';
+    
+    // Show placeholder again
+    cameraPlaceholder.style.display = 'flex';
+    cameraPlaceholder.style.visibility = 'visible';
+    cameraPlaceholder.innerHTML = `
+        <div>
+            <i class="fas fa-camera fa-4x mb-3 opacity-50"></i>
+            <h5>Camera will appear here</h5>
+            <p class="mb-0 opacity-75">Click "Start Detection" to begin</p>
+        </div>
+    `;
+    
+    console.log('✅ Camera feed stopped');
+}
+
+function toggleFreeze() {
+    detectionFrozen = !detectionFrozen;
+    const freezeBtn = document.getElementById('freezeBtn');
+    const freezeText = document.getElementById('freezeText');
+    
+    if (detectionFrozen) {
+        freezeText.textContent = 'Unfreeze Detection';
+        freezeBtn.innerHTML = '<i class="fas fa-play me-2"></i>' + freezeText.textContent;
+        showAlert('Detection frozen', 'warning');
+    } else {
+        freezeText.textContent = 'Freeze Detection';
+        freezeBtn.innerHTML = '<i class="fas fa-pause me-2"></i>' + freezeText.textContent;
+        showAlert('Detection resumed', 'info');
+    }
+}
+
+function startPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    
+    pollInterval = setInterval(() => {
+        if (detectionActive) {
+            // Poll for current letter
+            fetch('/api/asl/current_letter')
+            .then(response => response.json())
+            .then(data => {
+                updateCurrentLetter(data.letter);
+            })
+            .catch(error => console.error('Error polling letter:', error));
+            
+            // Poll for current sentence
+            fetch('/api/asl/sentence')
+            .then(response => response.json())
+            .then(data => {
+                if (data.sentence !== currentSentence) {
+                    currentSentence = data.sentence;
+                    updateSentenceDisplay();
+                }
+            })
+            .catch(error => console.error('Error polling sentence:', error));
+        }
+    }, 1000);
+}
+
+function stopPolling() {
+    if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+    }
+}
+
+function updateCurrentLetter(letter) {
+    const currentLetterEl = document.getElementById('currentLetter');
+    const addDetectedBtn = document.getElementById('addDetectedBtn');
+    
+    if (letter) {
+        currentLetterEl.textContent = letter;
+        currentLetterEl.className = 'h3 fw-bold text-success pulse';
+        addDetectedBtn.disabled = false;
+    } else {
+        currentLetterEl.textContent = 'None';
+        currentLetterEl.className = 'h3 fw-bold text-muted';
+        addDetectedBtn.disabled = true;
+    }
+}
+
+function updateUIState() {
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const freezeBtn = document.getElementById('freezeBtn');
+    const cameraStatus = document.getElementById('cameraStatus');
+    const cameraStatusText = document.getElementById('cameraStatusText');
+    
+    if (detectionActive) {
+        startBtn.style.display = 'none';
+        stopBtn.style.display = 'block';
+        freezeBtn.style.display = 'block';
+        cameraStatus.className = 'status-indicator status-active';
+        cameraStatusText.textContent = 'Active';
+    } else {
+        startBtn.style.display = 'block';
+        stopBtn.style.display = 'none';
+        freezeBtn.style.display = 'none';
+        cameraStatus.className = 'status-indicator status-inactive';
+        cameraStatusText.textContent = 'Inactive';
+    }
+}
+
+function addDetectedLetter() {
+    fetch('/api/asl/add_char', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ char: 'DETECTED' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Sentence will be updated via polling
+            document.getElementById('addDetectedBtn').disabled = true;
+            document.getElementById('currentLetter').textContent = 'None';
+            document.getElementById('currentLetter').className = 'h3 fw-bold text-muted';
+        }
+    })
+    .catch(error => console.error('Error adding letter:', error));
+}
+
+function addCharacter(char) {
+    fetch('/api/asl/add_char', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ char: char })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            currentSentence += char;
+            updateSentenceDisplay();
+        }
+    })
+    .catch(error => console.error('Error adding character:', error));
+}
+
+function backspace() {
+    if (currentSentence.length > 0) {
+        currentSentence = currentSentence.slice(0, -1);
+        updateSentenceDisplay();
+        
+        // Update on server side too
+        fetch('/api/asl/sentence')
+        .then(response => response.json())
+        .then(data => {
+            if (data.sentence.length > currentSentence.length) {
+                // Server has more, we need to sync
+                fetch('/api/asl/clear', { method: 'POST' })
+                .then(() => {
+                    if (currentSentence) {
+                        fetch('/api/asl/add_char', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ char: currentSentence })
+                        });
+                    }
+                });
+            }
+        });
+    }
+}
+
+function clearSentence() {
+    if (confirm('Are you sure you want to clear the entire sentence?')) {
+        fetch('/api/asl/clear', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentSentence = "";
+                updateSentenceDisplay();
+                showAlert('Sentence cleared', 'info');
+            }
+        })
+        .catch(error => console.error('Error clearing sentence:', error));
+    }
+}
+
+function saveSentence() {
+    if (!currentSentence.trim()) {
+        showAlert('No sentence to save!', 'warning');
+        return;
+    }
+    
+    fetch('/api/asl/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert(data.message, 'success');
+            // Optionally clear after saving
+            // clearSentence();
+        } else {
+            showAlert(data.message || 'Failed to save sentence', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving sentence:', error);
+        showAlert('Error saving sentence. Please try again.', 'danger');
+    });
+}
+
+function updateSentenceDisplay() {
+    const sentenceDisplay = document.getElementById('sentenceDisplay');
+    const charCount = document.getElementById('charCount');
+    const saveBtn = document.getElementById('saveBtn');
+    const getResponseBtn = document.getElementById('getResponseBtn');
+    
+    if (currentSentence) {
+        sentenceDisplay.textContent = currentSentence;
+        sentenceDisplay.style.color = '#000';
+        saveBtn.disabled = false;
+        getResponseBtn.disabled = false;
+    } else {
+        sentenceDisplay.textContent = 'Start signing to build your sentence...';
+        sentenceDisplay.style.color = '#999';
+        saveBtn.disabled = true;
+        getResponseBtn.disabled = true;
+    }
+    
+    charCount.textContent = `${currentSentence.length} characters`;
+}
+
+function getAIResponse() {
+    if (!currentSentence.trim()) {
+        showAlert('No sentence to get response for!', 'warning');
+        return;
+    }
+    
+    const getResponseBtn = document.getElementById('getResponseBtn');
+    const responseDisplay = document.getElementById('responseDisplay');
+    const responseStatus = document.getElementById('responseStatus');
+    
+    // Update UI to show loading state
+    getResponseBtn.disabled = true;
+    getResponseBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Getting Response...';
+    responseStatus.textContent = 'Thinking...';
+    responseStatus.className = 'badge bg-warning';
+    
+    responseDisplay.innerHTML = `
+        <div class="text-center">
+            <i class="fas fa-robot fa-3x mb-3"></i>
+            <p class="mb-0">🤖 Processing your message... Please wait while I think of a witty response!</p>
+        </div>
+    `;
+    
+    fetch('/api/asl/get_response', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Display the AI response
+            responseDisplay.innerHTML = `
+                <div>
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="fas fa-robot fa-2x me-3 mt-1"></i>
+                        <div>
+                            <h6 class="mb-2 fw-bold">Robotic Arm Says:</h6>
+                            <p class="mb-0">${data.response}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            responseStatus.textContent = 'Response received!';
+            responseStatus.className = 'badge bg-success';
+            showAlert('AI response received!', 'success');
+        } else {
+            responseDisplay.innerHTML = `
+                <div class="text-center text-warning">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <p class="mb-0">Sorry, I couldn't generate a response right now.</p>
+                    <small>${data.message || 'Unknown error occurred'}</small>
+                </div>
+            `;
+            responseStatus.textContent = 'Error occurred';
+            responseStatus.className = 'badge bg-danger';
+            showAlert(data.message || 'Failed to get AI response', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error getting AI response:', error);
+        responseDisplay.innerHTML = `
+            <div class="text-center text-warning">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                <p class="mb-0">Connection error. Please check if Ollama is running.</p>
+            </div>
+        `;
+        responseStatus.textContent = 'Connection error';
+        responseStatus.className = 'badge bg-danger';
+        showAlert('Error connecting to AI service. Please try again.', 'danger');
+    })
+    .finally(() => {
+        // Reset button state
+        getResponseBtn.disabled = false;
+        getResponseBtn.innerHTML = '<i class="fas fa-robot me-2"></i>Get AI Response';
+    });
+}
+</script>
+{% endblock %} 
