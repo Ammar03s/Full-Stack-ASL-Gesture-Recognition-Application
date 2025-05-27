@@ -453,7 +453,7 @@ Please respond to their message in character as this funny robotic arm:"""
                 "prompt": prompt,
                 "stream": False,
                 "options": {
-                    "temperature": 0.8,
+                    "temperature": 0.71,
                     "max_tokens": 200
                 }
             }

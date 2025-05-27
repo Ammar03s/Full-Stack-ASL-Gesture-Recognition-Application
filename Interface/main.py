@@ -287,7 +287,7 @@ Please respond to their message in character as this funny robotic arm:"""
                 "prompt": prompt,
                 "stream": False,
                 "options": {
-                    "temperature": 0.8,
+                    "temperature": 0.71,
                     "max_tokens": 200
                 }
             }
@@ -1367,6 +1367,6 @@ def get_user_stats():
         return jsonify({"success": False, "message": str(e)})
 
 if __name__ == '__main__':
-    print("🚀 Starting Simple AI Companion System...")
+    print("🚀 Starting AI Companion System...")
     print("📍 Access the application at: http://localhost:8080")
     app.run(debug=True, host='127.0.0.1', port=8080) 

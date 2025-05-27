@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - AI Companion System{% endblock %}
+{% block title %}Dashboard - Hello AI{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -11,7 +11,7 @@
                 Welcome back, {{ username }}!
             </h1>
             <p class="lead text-white opacity-75">
-                Choose your AI-powered activity below
+                Choose your AI-Powered activity
             </p>
         </div>
     </div>
@@ -79,11 +79,11 @@
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-check-circle text-success me-2"></i>
-                            Multi-armed bandit AI selection
+                            Multi-Armed Bandit AI Selection
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-check-circle text-success me-2"></i>
-                            Track your win/loss statistics
+                            Track your W/L statistics
                         </li>
                     </ul>
                 </div>
@@ -119,11 +119,11 @@
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-check-circle text-success me-2"></i>
-                            Win/loss statistics
+                            Win/Loss Statistics
                         </li>
                         <li class="mb-2">
                             <i class="fas fa-check-circle text-success me-2"></i>
-                            AI agent performance
+                            Agents Performance
                         </li>
                     </ul>
                 </div>
@@ -459,7 +459,7 @@ function loadRecentActivity() {
     })
     .catch(() => {
         displayRecentActivity([
-            { type: 'system', text: 'Welcome to AI Companion!', time: 'Now', icon: 'fas fa-star text-warning' }
+            { type: 'system', text: 'Hello AI!', time: 'Now', icon: 'fas fa-star text-warning' }
         ]);
     });
 }

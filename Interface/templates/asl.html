@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}ASL Detection - AI Companion System{% endblock %}
+{% block title %}ASL Detection - Hello AI{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -176,7 +176,7 @@
             </div>
             <div class="card-body p-4">
                 <div class="form-control form-control-custom" style="min-height: 100px; font-size: 1.2rem; line-height: 1.6;" id="sentenceDisplay">
-                    Start signing to build your sentence...
+                    Start doing Gestures...
                 </div>
                 <div class="mt-3 d-flex gap-2">
                     <button class="btn btn-primary" id="getResponseBtn" disabled>
@@ -206,7 +206,7 @@
                 <div class="response-container" style="min-height: 120px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; font-size: 1.1rem; line-height: 1.6;" id="responseDisplay">
                     <div class="text-center opacity-75">
                         <i class="fas fa-robot fa-3x mb-3"></i>
-                        <p class="mb-0">Talk to me using sign language and I'll respond with my robotic wisdom! 🤖</p>
+                        <p class="mb-0">Talk to me using sign language and I'll respond with my robotic wisdom  🤖</p>
                     </div>
                 </div>
             </div>
@@ -610,7 +610,7 @@ function updateSentenceDisplay() {
         saveBtn.disabled = false;
         getResponseBtn.disabled = false;
     } else {
-        sentenceDisplay.textContent = 'Start signing to build your sentence...';
+        sentenceDisplay.textContent = 'Start doing Gestures...';
         sentenceDisplay.style.color = '#999';
         saveBtn.disabled = true;
         getResponseBtn.disabled = true;
@@ -638,7 +638,7 @@ function getAIResponse() {
     responseDisplay.innerHTML = `
         <div class="text-center">
             <i class="fas fa-robot fa-3x mb-3"></i>
-            <p class="mb-0">🤖 Processing your message... Please wait while I think of a witty response!</p>
+            <p class="mb-0">Thinking...</p>
         </div>
     `;
     

@@ -1,4 +1,4 @@
-# 🤖 Enhanced AI Companion System
+# 🤖 Hello AI
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)](https://flask.palletsprojects.com/)
@@ -58,8 +58,8 @@ pip install -r requirements.txt
 ### 4. Launch the System
 ```bash
 # From the root directory
-start_ai_companion.bat
-# Or manually: cd Interface && python app_simple.py
+Start_the_app.bat
+# Or manually: cd Interface && python main.py
 ```
 
 ### 5. Access the Application
@@ -122,7 +122,7 @@ model_dict = pickle.load(open('ASL_Detection/sign-language-detector-python-maste
 model = model_dict['model']
 
 # Use with MediaPipe hand landmarks
-# See Interface/app_simple.py for implementation example
+# See Interface/main.py for implementation example
 ```
 
 ---
@@ -164,14 +164,14 @@ model = model_dict['model']
 ## 📁 **Project Structure**
 
 ```
-enhanced-ai-companion/
-├── 🚀 start_ai_companion.bat      # Quick start script
+Hello-ai/
+├── 🚀 Start_the_app.bat           # Quick start script
 ├── 📖 README.md                   # This file
 ├── 📖 PROJECT_STRUCTURE.md        # Detailed organization guide
 ├── 📄 LICENSE                     # MIT License
 │
 ├── 🎯 Interface/                   # Complete Web Application
-│   ├── 🐍 app_simple.py          # Flask web app (all features)
+│   ├── 🐍 main.py                # Flask web app (all features)
 │   ├── 📁 templates/             # HTML templates
 │   │   ├── 🤟 asl.html           # ASL detection page
 │   │   ├── 🎮 rps.html           # RPS game page
@@ -226,7 +226,7 @@ enhanced-ai-companion/
 
 ### **Camera Settings**
 ```python
-# In app_simple.py or detector_replier.py
+# In main.py or detector_replier.py
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
@@ -237,7 +237,7 @@ cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 # Ollama configuration
 ollama_url = "http://localhost:11434/api/generate"
 model_name = "mistral"
-temperature = 0.8  # Creativity level
+temperature = 0.71  # Creativity level
 max_tokens = 200   # Response length
 ```
 
@@ -301,7 +301,7 @@ python -c "import pickle, cv2, mediapipe; print('All imports successful')"
 - **Supported Signs**: A-Z letters + space/delete
 
 ### **RPS Game**
-- **Gesture Recognition**: >95% accuracy
+- **Gesture Recognition**: ~95% accuracy
 - **AI Adaptation**: Learns patterns within 10-20 games
 - **Response Time**: <50ms game decision
 - **Learning Agents**: 38 different strategies
@@ -357,15 +357,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **ASL Community** - Sign language datasets and resources
 - **Multi-Armed Bandit Research** - Adaptive AI algorithms
 
----
-
-## 📞 **Support & Contact**
-
-- **Issues**: [GitHub Issues](https://github.com/AboodH-2/AI-Powered-Smart-Robotic-Arm/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/AboodH-2/AI-Powered-Smart-Robotic-Arm/discussions)
-- **Documentation**: [Project Wiki](https://github.com/AboodH-2/AI-Powered-Smart-Robotic-Arm/wiki)
-
----
 
 <div align="center">
 
