@@ -1,4 +1,4 @@
-# Rock Paper Scissors Game Component
+# Rock Paper Scissors AI Game Component
 
 This directory will contain the implementation of the Rock Paper Scissors game using hand gesture recognition.
 
@@ -6,6 +6,7 @@ This directory will contain the implementation of the Rock Paper Scissors game u
 - Real-time hand gesture recognition for Rock, Paper, and Scissors moves
 - Player vs AI gameplay
 - Score tracking system
+- Historical Data access
 - Integration with the main ASL detection system
 - Performance analytics and statistics
 
