@@ -177,9 +177,9 @@ Hello-ai/
 
 ---
 
-## 🤝 **Contributing**
 
-### Development Setup
+
+## Development Setup
 ```bash
 git clone https://github.com/Ammar03s/Full-Stack-ASL-Gesture-Recognition-Application.git
 cd Full-Stack-ASL-Gesture-Recognition-Application
